@@ -14,9 +14,7 @@ class Turtlebot {
         float odom_z;
 
         ros::Subscriber odom_sub; 
-
         ros::Publisher vel_pub;
-
         geometry_msgs::Twist twist;
 
     //public methods to access private members
@@ -30,7 +28,6 @@ class Turtlebot {
             vel_pub = nh->advertise<geometry_msgs::Twist>
                                 ("cmd_vel",10);
             initOdomPos();
-
         }
 
         void initOdomPos()
