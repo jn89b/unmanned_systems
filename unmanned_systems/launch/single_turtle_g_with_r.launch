@@ -1,0 +1,8 @@
+<launch>
+
+    <!--launches both gazebo and rviz with turtlebot-->
+    <include file="$(find unmanned_systems)/launch/single_turtle_rviz.launch"/>
+    <include file="$(find unmanned_systems)/launch/single_turtle_gazebo.launch"/>
+
+
+</launch>
