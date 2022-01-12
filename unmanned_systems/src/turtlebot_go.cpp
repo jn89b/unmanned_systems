@@ -7,9 +7,9 @@
 #include <nav_msgs/Odometry.h>
 
 // declare global variables
-float odom_x;
-float odom_y;
-float odom_z;
+float odom_x = 0;
+float odom_y = 0;
+float odom_z = 0;
 
 geometry_msgs::Twist twist;
 
@@ -26,11 +26,13 @@ void odom_cb(const nav_msgs::Odometry::ConstPtr& msg)
 void go_straight(ros::Publisher vel_publisher)
 {
     twist.linear.x = 0.1;
+    twist.angular.z = 0.0;
     vel_publisher.publish(twist);
 }
 
 void go_turn(ros::Publisher vel_publisher)
 {
+    twist.linear.x = 0.0;
     twist.angular.z = 0.1;
     vel_publisher.publish(twist);
 }
@@ -54,9 +56,11 @@ int main(int argc, char **argv)
     //main loop iteration
     while (ros::ok())
     {
+        //How to get position 
+        go_straight(vel_pub);
         //the spin once does the call back for retrieval of info from your sensors
-        //ros::spinOnce();
-        go_turn(vel_pub);
+        ros::spinOnce();
+        std::cout<<"odom x: "<< odom_x << std::endl;
         rate.sleep();
     }
     return 0;   

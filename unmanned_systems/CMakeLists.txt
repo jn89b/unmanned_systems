@@ -213,7 +213,9 @@ install(TARGETS
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
-  scripts/go_forward.py
+  scripts/turtlebot_go_python.py
+  scripts/turtlebot_go_class_python.py
+  scripts/turtlebot_go_import_python.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
