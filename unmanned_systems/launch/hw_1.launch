@@ -1,0 +1,6 @@
+<launch>
+
+    <!--run 2 nodes the hw1 and the logger1-->
+    <node pkg="unmanned_systems" type="dumpster_code.py" name="dumpster_code"/>
+
+</launch>

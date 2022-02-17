@@ -36,15 +36,15 @@ if __name__ == '__main__':
     rospy.init_node('turtlebot_go_python', anonymous=False)
     
     #declare publishers and subscribers
-    odom_sub = rospy.Subscriber('/Leonardo/odom', Odometry, odom_cb)
-    vel_pub = rospy.Publisher("/Leonardo/cmd_vel", Twist, queue_size=5)
+    odom_sub = rospy.Subscriber('odom', Odometry, odom_cb)
+    vel_pub = rospy.Publisher("cmd_vel", Twist, queue_size=5)
 
     #control the rate of the script to recieve messages and or send messages
     rate = rospy.Rate(10)
     odom_x = 0
     while not rospy.is_shutdown():
 
-        go_forward(vel_pub, 0.05)
+        go_forward(vel_pub, 0.1)
         print("x position: ", odom_x)
 
         if odom_x >= 1.5:
