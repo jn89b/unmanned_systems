@@ -29,6 +29,10 @@ class Turtlebot():
         self.odom_y = None
         self.odom_z = None
 
+        self.orientation_x 
+
+        self.yaw = None
+
         #declare publishers and subscribers
         self.odom_sub = rospy.Subscriber('odom', Odometry, self.odom_cb)
         #velocity publisher  
@@ -53,9 +57,6 @@ class Turtlebot():
         forward_cmd.angular.z = ang_speed
         self.vel_publisher.publish(forward_cmd)
 
-def run_something():
-    """empty code to run whatever your functions"""
-    print("hello world")
 
 if __name__ == '__main__':
 

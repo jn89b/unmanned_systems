@@ -218,8 +218,8 @@ catkin_install_python(PROGRAMS
   scripts/turtlebot_go_import_python.py
   scripts/boilerplate.py
   scripts/my_dumpstercode.py
-  scripts/dumpster_code.py
   scripts/logger.py
+  scripts/hw_1_help.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

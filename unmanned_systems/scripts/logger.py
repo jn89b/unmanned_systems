@@ -5,6 +5,7 @@ import time
 import csv
 import os
 import datetime
+import math
 
 #import any messages you want
 from nav_msgs.msg import Odometry
@@ -33,7 +34,8 @@ class TBInfo():
 						 orientation_q.z, orientation_q.w]
 		
 		(roll, pitch, yaw) = euler_from_quaternion(orientation_list)
-		self.yaw = yaw
+		#print("self.yaw", self.yaw)
+		self.yaw = math.degrees(yaw % 360)
 
 	def vel_cb(self,msg):
 		"""get velocity information"""
