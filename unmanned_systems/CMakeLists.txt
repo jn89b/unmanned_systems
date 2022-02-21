@@ -220,6 +220,7 @@ catkin_install_python(PROGRAMS
   scripts/my_dumpstercode.py
   scripts/logger.py
   scripts/hw_1_help.py
+  scripts/turtlebot_pathfinding.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

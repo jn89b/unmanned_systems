@@ -17,7 +17,7 @@
 - Turtlebot example:
     - how to publish velocity commands
     - how to subscribe to position commands
-    - yaw heading
+    - yaw heading ->  quaternion to euler angles
     - time interval tips
     - clue in on PID gains 
     - Logging 

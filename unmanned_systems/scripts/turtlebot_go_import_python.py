@@ -14,7 +14,7 @@ if __name__ == '__main__':
     turtlebot = Turtlebot.Turtlebot()
 
     while not rospy.is_shutdown():
-        turtlebot.go_forward(0.2)
+        turtlebot.go_forward(0.0)
         #importing utility funciton and using the stupid function
         util_functions.get_stupid_function()
         print("x position: ", turtlebot.odom_x)
