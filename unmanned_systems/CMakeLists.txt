@@ -216,6 +216,9 @@ catkin_install_python(PROGRAMS
   scripts/turtlebot_go_python.py
   scripts/turtlebot_go_class_python.py
   scripts/turtlebot_go_import_python.py
+  scripts/apriltag_position.py
+  scripts/turtlebot_track.py
+  scripts/turtlebot_pathfinding.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
