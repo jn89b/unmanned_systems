@@ -6,6 +6,7 @@ import rospy
 import numpy as np
 import math as m
 from unmanned_systems import Turtlebot 
+from geometry_msgs.msg import Twist
 #import any messages you want
 from unmanned_systems import path_finding
 from nav_msgs.msg import Odometry
@@ -17,6 +18,14 @@ def run_something():
 def unit_vector(vector):
     """ Returns the unit vector of the vector.  """
     return vector / np.linalg.norm(vector)
+
+def convert_feet_to_m(location):
+    """converts feet to meter coordinates"""
+    meter_x = location[0]*0.3048
+    meter_y = location[1]*0.3048
+    
+    return [meter_x, meter_y]
+
 
 def compute_angle_between(v1, v2):
     """ Returns the angle in radians between vectors 'v1' and 'v2'::
@@ -43,16 +52,24 @@ if __name__ == '__main__':
     ### ENTER PARAMS
 
     turtlebot = Turtlebot.Turtlebot(kp=1.0,ki=0.0,kd=0.0,rate=20)
-    start = [0,0]
-    goal = [8,9]
+    #turtlebot.convert_m_to_freedom_units()
 
-    x_span = [0,10]
-    y_span = [0,10]
-    spacing = 0.5
-    obst_radius = 0.65
-    config_space = path_finding.ConfigSpace(x_span, y_span, spacing)
-    obstacle_list = [[1,1], [4,4], [3,4], [5,0], [5,1], [0,7], [1,7], [2,7], [3,7]]
+    start = [0,0]
+    goal = [3,2]
     
+    x_span = [0,4]
+    y_span = [0,4]
+    spacing = 0.5
+    obst_radius = 0.25
+    config_space = path_finding.ConfigSpace(x_span, y_span, spacing)
+    #obstacle_list = [[1,1], [4,4], [3,4], [5,0], [5,1], [0,7], [1,7], [2,7], [3,7]]
+    
+    #this is in meters
+    obstacle_list = [[0,1], [0.5,1], [1,1],
+                    [2,0], [2,0.5], [2,1],
+                    [1,2], [1.5,1.5], [2,2]]
+
+
     config_space.set_obstacles(obstacle_list)
 
     heading_tolerance = 0.01
@@ -61,7 +78,7 @@ if __name__ == '__main__':
                     configSpace=config_space, iter_max=500, 
                     obstacle_radius=obst_radius)
 
-    #waypoints = [[1,0]]
+    print("waypoints are ", waypoints)
 
     done = False
     #this is like a while loop, until you Ctrl+C to end the node
@@ -102,4 +119,8 @@ if __name__ == '__main__':
         #use rate.sleep to control it at your specified ros rate
         rate.sleep()
 
+    twist = Twist()
+    twist.linear.x = 0.0; twist.linear.y = 0.0; twist.linear.z = 0.0
+    twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = 0.0
+    turtlebot.vel_publisher.publish(twist)
 

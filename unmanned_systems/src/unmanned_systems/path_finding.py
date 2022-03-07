@@ -187,7 +187,7 @@ def astar(start_position, goal_position, configSpace, iter_max, obstacle_radius)
 
             if configSpace.check_out_bounds(new_position, configSpace.x_bounds, 
             configSpace.y_bounds) == True:
-                print("you are out of bounds", new_position)
+                #xprint("you are out of bounds", new_position)
                 continue
                 
             #check within obstacle

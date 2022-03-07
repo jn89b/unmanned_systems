@@ -58,19 +58,23 @@ class PID():
 
 class Turtlebot():
     def __init__(self,kp,ki,kd,rate):
-
+        """donatello needs an offset leonard does not"""
         self.odom_position = [None,None]
         self.odom_yaw_rad = None
         self.odom_yaw_deg = None
         self.pid = PID(kp,ki,kd,rate)
+        #self.name = 'donatello'
+        self.name = 'Leonardo'
         #declare publishers and subscribers
-        self.odom_sub = rospy.Subscriber('odom', Odometry, self.odom_cb)
-        self.vel_publisher = rospy.Publisher("cmd_vel", Twist, queue_size=5)
-
+        self.odom_sub = rospy.Subscriber(self.name+'/odom', Odometry, self.odom_cb)
+        self.vel_publisher = rospy.Publisher(self.name+'/cmd_vel', Twist, queue_size=5)
+        self.freedom_publisher = rospy.Publisher('freedom_odom', Odometry, queue_size=5)
+    
     def odom_cb(self,msg):
         """recieve message of odom"""
-        odom_x = msg.pose.pose.position.x
-        odom_y = msg.pose.pose.position.y
+        """add offsets"""
+        odom_x = msg.pose.pose.position.x 
+        odom_y = msg.pose.pose.position.y 
         orientation_q = msg.pose.pose.orientation
 
         #orientation
@@ -81,6 +85,15 @@ class Turtlebot():
         self.odom_yaw_deg = m.degrees(self.odom_yaw_rad) % 360
 
         self.odom_position = [odom_x, odom_y]
+
+    def convert_m_to_freedom_units(self):
+        """convert meters to freedom units one meter is 3.2084ft"""
+        odom_freedom = Odometry()
+        odom_freedom.pose.pose.position.x = self.odom_position[0]*3.2048
+        odom_freedom.pose.pose.position.y = self.odom_position[1]*3.2048
+        odom_freedom.pose.pose.position.z = 0.0
+        print("freedom units are", odom_freedom.pose.position)
+        #self.freedom_publisher.publish(odom_freedom)
 
     def go_forward(self, speed):
         """commands the turtle to begin going forward at a certain speed"""
@@ -163,7 +176,8 @@ class Turtlebot():
             return True
 
     def track_go_target(self, error_tol, desired_position):
-        """go to the target with compensator 
+        """
+        go to the target with compensator 
         control x position and control yaw 
         """
         desired_angle = compute_angle_between(desired_position, self.odom_position)
