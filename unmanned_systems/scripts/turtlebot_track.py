@@ -19,13 +19,6 @@ e = """
 Communications Failed
 """
 
-"""
-Track Apriltag:
-Center to turtlebot: 
-Stay at some x length:
-
-Position command -> Velocity command -> Feedback position estimate
-"""
 
 
 class PID():
@@ -65,6 +58,9 @@ class PID():
         return gain
 
 class Turtlebot():
+    """
+    turtlebot
+    """
     def __init__(self, rate):
         self.odom_x = None
         self.odom_y = None

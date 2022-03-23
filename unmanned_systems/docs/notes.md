@@ -36,7 +36,13 @@ obstacle_list = [[0,1], [0.5,1], [1,1],
 
 
 # SSH
-Leonardo - 192.168.1.127 
+Leonardo - 
+    ssh ubuntu@192.168.1.127
+    password: raspberry
+
+Donatello - 
+    ssh donatello@192.168.1.146
+    password: raspberry
 
 
 ## How to log in to turtlebot
@@ -54,4 +60,5 @@ Leonardo - 192.168.1.127
 - ROS hostname as turtlebot ip:
     -export ROS_HOSTNAME= turtlebot_ip 
 
+#
 

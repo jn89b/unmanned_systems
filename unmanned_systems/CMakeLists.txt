@@ -219,6 +219,7 @@ catkin_install_python(PROGRAMS
   scripts/apriltag_position.py
   scripts/turtlebot_track.py
   scripts/turtlebot_pathfinding.py
+  scripts/obstacle_avoid.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
