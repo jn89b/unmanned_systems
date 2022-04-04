@@ -162,7 +162,7 @@ def astar(start_position, goal_position, configSpace, iter_max, obstacle_radius)
     while [current_node.x, current_node.y] != goal_position:
         
         iter_count = iter_count+1
-        
+
         current_node_index = min(turtle.not_visited, key=lambda x:turtle.not_visited[x].cost)
         current_node = turtle.not_visited[current_node_index]
         turtle.position = [current_node.x, current_node.y]
@@ -180,14 +180,6 @@ def astar(start_position, goal_position, configSpace, iter_max, obstacle_radius)
             print("I've arrived!", iter_count)
             waypoints = return_path(current_node, turtle)
             return waypoints            
-            # #plot the waypoints
-            # x_list = [x[0] for x in waypoints]
-            # y_list = [y[1] for y in waypoints]
-            # plt.plot(x_list, y_list)
-            
-            # for obstacle in configSpace.obstacles:
-            #     plt.scatter(obstacle[0], obstacle[1])
-            # break
     
         for move in turtle.move_list:
             new_position = [turtle.position[0] + move[0], 
