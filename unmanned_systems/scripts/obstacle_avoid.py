@@ -39,13 +39,16 @@ class ObstacleAvoid():
         right_heading = msg.ranges[self.angle_right]
         left_heading= msg.ranges[self.angle_left]
 
+        """this is stupid but had some issues with Lidar sensor not reading correctly
+        comment this out for your gazebo simulation"""
         if mid_heading == 0.0:
             mid_heading = 5.0
         if left_heading == 0.0:
             left_heading = 5.0
         if right_heading == 0.0:
             right_heading = 5
-
+        
+        
         print('-------------------------------------------')
         print('Range data at 0 deg:   {}'.format(mid_heading))
         print('Range data at 60 deg:  {}'.format(right_heading))
