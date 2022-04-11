@@ -3,8 +3,11 @@
 import rospy
 import math as m
 import numpy as np
+
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import Odometry
+from sensor_msgs.msg import LaserScan
+
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
 from unmanned_systems.path_finding import compute_distance
 
@@ -57,18 +60,42 @@ class PID():
         return gain,error
 
 class Turtlebot():
-    def __init__(self,kp,ki,kd,rate):
+    def __init__(self, kp,ki,kd,rate, name=None, lidar_track=False, lidar_avoid=False):
         """donatello needs an offset leonard does not"""
         self.odom_position = [None,None]
         self.odom_yaw_rad = None
         self.odom_yaw_deg = None
+        
+        #pid composition
         self.pid = PID(kp,ki,kd,rate)
-        #self.name = 'donatello'
-        self.name = 'Leonardo'
+        
+        #set to default name if no name for turtlebot has been set
+        if name == None:            
+            #self.name = 'donatello'
+            self.name = 'Leonardo'
+        else:
+            self.name = name
+        
         #declare publishers and subscribers
         self.odom_sub = rospy.Subscriber(self.name+'/odom', Odometry, self.odom_cb)
         self.vel_publisher = rospy.Publisher(self.name+'/cmd_vel', Twist, queue_size=5)
-        self.freedom_publisher = rospy.Publisher('freedom_odom', Odometry, queue_size=5)
+        
+        if lidar_track == True:
+            self.detected_range_list = []
+            self.detected_heading_angle_list = []
+            self.detected_range_mean = None
+            self.detected_angle_mean = None
+            self.laser_sub = rospy.Subscriber(self.name+"/scan", LaserScan, self.lidar_track_cb)
+        
+        #built in Lidar module
+        if lidar_avoid == True:
+            #setting to meters
+            self.scan_tol_min = 0.5
+            self.scan_tol_max = 0.5
+
+            self.angle_left = 300
+            self.angle_right = 60
+            self.laser_sub = rospy.Subscriber(self.name+"/scan", LaserScan, self.laser_cb)
     
     def odom_cb(self,msg):
         """recieve message of odom"""
@@ -83,17 +110,8 @@ class Turtlebot():
         (roll, pitch, yaw) = euler_from_quaternion(orientation_list)
         self.odom_yaw_rad = yaw
         self.odom_yaw_deg = m.degrees(self.odom_yaw_rad) % 360
-
+        #don't care about the z position
         self.odom_position = [odom_x, odom_y]
-
-    def convert_m_to_freedom_units(self):
-        """convert meters to freedom units one meter is 3.2084ft"""
-        odom_freedom = Odometry()
-        odom_freedom.pose.pose.position.x = self.odom_position[0]*3.2048
-        odom_freedom.pose.pose.position.y = self.odom_position[1]*3.2048
-        odom_freedom.pose.pose.position.z = 0.0
-        print("freedom units are", odom_freedom.pose.position)
-        #self.freedom_publisher.publish(odom_freedom)
 
     def go_forward(self, speed):
         """commands the turtle to begin going forward at a certain speed"""
@@ -111,7 +129,7 @@ class Turtlebot():
         self.vel_publisher.publish(twist)
 
     def go_forward_turn(self, speed, turn_speed):
-        """allows turtlebot to go forward and turn based on """
+        """allows turtlebot to go forward and turn based on speed and turn speed """
         turn_speed = self.check_angular_threshold(turn_speed)
         speed = self.check_linear_speed(speed)
         twist = Twist()
@@ -120,7 +138,8 @@ class Turtlebot():
         self.vel_publisher.publish(twist)
 
     def check_linear_speed(self,speed):
-        max_line_speed = 0.15
+        """check if not going too fast"""
+        max_line_speed = 0.23
         if abs(speed) >= max_line_speed:
             return max_line_speed
         else:
@@ -128,7 +147,7 @@ class Turtlebot():
 
     def check_angular_threshold(self, turn_speed):
         """check if gains are too much"""
-        max_ang_speed = 1.5
+        max_ang_speed = 2.8
         if abs(turn_speed)>= max_ang_speed:
             #print("too much")
             if turn_speed >= 0:
@@ -196,5 +215,58 @@ class Turtlebot():
         elif abs(distance_error) <= error_tol:
             self.go_forward_turn(0.0, 0.0)
             return True
+    
+    def obs_avoid_cb(self,msg):
+        """conduct obstacle avoidance if needed"""
+        mid_heading = msg.ranges[0]
+        right_heading = msg.ranges[self.angle_right]
+        left_heading= msg.ranges[self.angle_left]
+
+        """
+        this is stupid, but lidar has some issues of detection and would be 0.0 even though
+        there is not an object in front of it
+        """
+        # if mid_heading == 0.0:
+        #     mid_heading = 5.0
+        # if left_heading == 0.0:
+        #     left_heading = 5.0
+        # if right_heading == 0.0:
+        #     right_heading = 5
+
+        # print('-------------------------------------------')
+        # print('Range data at 0 deg:   {}'.format(mid_heading))
+        # print('Range data at 60 deg:  {}'.format(right_heading))
+        # print('Range data at 300 deg: {}'.format(left_heading))
+        # print('-------------------------------------------')
+
+        if (mid_heading>self.scan_tol_min) and (left_heading>self.scan_tol_max) and (right_heading>self.scan_tol_min): 
+            print("good to go")
+            avoid = Twist()
+            avoid.linear.x = 0.0
+            avoid.angular.z = 0.0
+            self.twist_pub.publish(avoid)
+        else:
+            avoid = Twist()
+            avoid.linear.x = 0.0
+            avoid.angular.z = 0.35
+            if (mid_heading>self.scan_tol_min) and (left_heading>self.scan_tol_max) and (right_heading>self.scan_tol_min): 
+                avoid.linear.x = 0.0
+                avoid.angular.z = 0.0
+
+            self.twist_pub.publish(avoid)
+
+    def lidar_track_cb(self,msg):
+        """callback function that returns the heading and range vals as list"""
+        self.detected_range_list = []
+        self.detected_heading_angle_list = []
+        inf = float('inf')
+        
+        lidar_vals = msg.ranges
+        for i, val in enumerate(lidar_vals):
+            if val != inf:
+                self.detected_heading_angle_list.append(i)
+                self.detected_range_list.append(val)
+
+    
 
         

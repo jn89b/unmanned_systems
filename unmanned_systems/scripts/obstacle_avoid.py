@@ -39,6 +39,8 @@ class ObstacleAvoid():
         right_heading = msg.ranges[self.angle_right]
         left_heading= msg.ranges[self.angle_left]
 
+        #this is stupid, but lidar has some issues of detection and would be 0.0 even though
+        #there is not an object in front of it
         if mid_heading == 0.0:
             mid_heading = 5.0
         if left_heading == 0.0:

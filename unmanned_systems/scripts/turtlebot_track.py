@@ -19,8 +19,6 @@ e = """
 Communications Failed
 """
 
-
-
 class PID():
     """Compensator"""
     def __init__(self, kp, ki, kd, rate):

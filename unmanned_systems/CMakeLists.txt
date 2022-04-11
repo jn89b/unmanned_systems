@@ -220,6 +220,8 @@ catkin_install_python(PROGRAMS
   scripts/turtlebot_track.py
   scripts/turtlebot_pathfinding.py
   scripts/obstacle_avoid.py
+  scripts/evader.py 
+  scripts/prop_nav.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
