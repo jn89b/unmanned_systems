@@ -41,18 +41,19 @@ class ObstacleAvoid():
 
         #this is stupid, but lidar has some issues of detection and would be 0.0 even though
         #there is not an object in front of it
-        if mid_heading == 0.0:
-            mid_heading = 5.0
-        if left_heading == 0.0:
-            left_heading = 5.0
-        if right_heading == 0.0:
-            right_heading = 5
-
-        print('-------------------------------------------')
-        print('Range data at 0 deg:   {}'.format(mid_heading))
-        print('Range data at 60 deg:  {}'.format(right_heading))
-        print('Range data at 300 deg: {}'.format(left_heading))
-        print('-------------------------------------------')
+        # if mid_heading == 0.0:
+        #     mid_heading = 5.0
+        # if left_heading == 0.0:
+        #     left_heading = 5.0
+        # if right_heading == 0.0:
+        #     right_heading = 5
+        
+        
+        # print('-------------------------------------------')
+        # print('Range data at 0 deg:   {}'.format(mid_heading))
+        # print('Range data at 60 deg:  {}'.format(right_heading))
+        # print('Range data at 300 deg: {}'.format(left_heading))
+        # print('-------------------------------------------')
 
 
         if (mid_heading>self.scan_tol_min) and (left_heading>self.scan_tol_max) and (right_heading>self.scan_tol_min): 
