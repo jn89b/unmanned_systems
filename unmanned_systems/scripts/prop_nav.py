@@ -79,10 +79,10 @@ def compute_mean(some_list):
 if __name__ == '__main__':
     
     rospy.init_node('prop_nav_tb')
-    rate_val = 5
+    rate_val = 15
     rate = rospy.Rate(rate_val)
     
-    N_val = 0.65
+    N_val = 1.0
     pn = PN(dt=rate_val, N=N_val)
     
     #instantiate turtlebot class 
@@ -101,7 +101,6 @@ if __name__ == '__main__':
             print("target_angle_mean", target_angle_mean)            
             los_dot,v = pn.get_turn_rate(target_heading=target_angle_mean, pursuer_heading=tb_pursuer.odom_yaw_deg, 
                                        target_position=target_range_mean)
-    
             if los_dot != None:
                 tb_pursuer.go_forward_turn(forward_speed, los_dot)
     
