@@ -222,6 +222,7 @@ catkin_install_python(PROGRAMS
   scripts/obstacle_avoid.py
   scripts/evader.py 
   scripts/prop_nav.py
+  scripts/logger.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
