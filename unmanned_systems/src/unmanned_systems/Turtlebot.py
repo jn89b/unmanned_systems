@@ -9,7 +9,7 @@ from nav_msgs.msg import Odometry
 from sensor_msgs.msg import LaserScan
 
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
-from unmanned_systems.path_finding import compute_distance
+#from unmanned_systems.path_finding import compute_distance
 
 def unit_vector(vector):
     """ Returns the unit vector of the vector.  """
